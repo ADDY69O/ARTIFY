@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
+const User = require("./userModel");
 
 const postSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    require: true,
+    ref: "User", // Use "User" here with an uppercase "U"
+    required: true,
   },
   createdAt: {
     type: Date,
-
     default: Date.now,
   },
   updatedAt: {
@@ -17,18 +17,18 @@ const postSchema = new mongoose.Schema({
   },
   message: {
     type: String,
-    require: true,
+    required: true,
   },
   image: {
     type: String,
-    require: true,
+    required: true,
   },
   comments: [
     {
       sentBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        require: true,
+        ref: "User", // Use "User" here with an uppercase "U"
+        required: true,
       },
       sentAt: {
         type: Date,
@@ -37,7 +37,7 @@ const postSchema = new mongoose.Schema({
       linked: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+          ref: "User", // Use "User" here with an uppercase "U"
         },
       ],
     },

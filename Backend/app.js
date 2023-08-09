@@ -1,27 +1,24 @@
-const express = require('express');
-const dotenv = require('dotenv');
+const express = require("express");
+const dotenv = require("dotenv");
 const app = express();
+const cors = require("cors");
 
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
+dotenv.config({ path: "./config.env" });
 
-dotenv.config({path:"./config.env"})
+require("./db/conn");
 
-
-require('./db/conn')
-
-
-app.use('/api/v1/post',require('./routes/postRoutes'))
-app.use('/api/v1/user', require('./routes/userRoutes'));
+app.use("/api/v1/post", require("./routes/postRoutes"));
+app.use("/api/v1/user", require("./routes/userRoutes"));
 
 const PORT = process.env.PORT;
 
-app.get("/",(req,res)=>{
-    res.send("Home page");
-})
+app.get("/", (req, res) => {
+  res.send("Home page");
+});
 
-
-app.listen(PORT,(req,res)=>{
-   
-    console.log(`app is listening on ${PORT}`)
-})
+app.listen(PORT, (req, res) => {
+  console.log(`app is listening on ${PORT}`);
+});

@@ -1,0 +1,14 @@
+*{
+    padding: 0;
+    margin: 0;
+    ;
+}
+.mini{
+    transition: all cubic-bezier(0.19,1,0.22,1)1s;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    z-index: 99999;
+    border-radius: 50%;
+    background-color: red;
+}
