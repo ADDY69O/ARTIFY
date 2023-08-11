@@ -1,26 +1,47 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const Post = require("./postModel");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: [true, "please enter an name"],
   },
 
   email: {
     type: String,
-    require: true,
-    unique: true,
+    required: [true, "please Enter an email"],
+    unique: [true, "Email already exist"],
   },
 
   password: {
     type: String,
-    require: true,
+    required: [true, "please enter an password"],
+
+    minlength: [6, "password must be atleast 6 characters"],
   },
   image: {
     type: String,
     default: "https://www.computerhope.com/jargon/g/guest-user.png",
   },
+  posts: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Post",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
+  following: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -29,6 +50,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

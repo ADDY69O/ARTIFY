@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BiLike, BiCommentDetail } from "react-icons/bi";
 
 const Card = ({ post }) => {
-  console.log(post);
+  // console.log(post);
   return (
     <Wrapper>
       <div className="upper">

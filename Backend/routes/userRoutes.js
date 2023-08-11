@@ -1,19 +1,28 @@
-const express = require('express');
-const {Router} = require('express')
+const express = require("express");
+const { Router } = require("express");
 
-const {createUser, login, deleteUser, updateUser} = require("../controllers/userControllers")
+const {
+  createUser,
+  login,
+  deleteUser,
+  updateUser,
+  getUsers,
+  FollowUnfollow,
+} = require("../controllers/userControllers");
 
-const protect = require('../middleware/protect');
-const router= express.Router();
+const protect = require("../middleware/protect");
+const router = express.Router();
 
 // router.get('/',async(req,res)=>{
 //     res.send("It worked ");
 
 // })
 
-router.route('/').post(createUser);
-router.route('/login').post(login);
-router.route("/log/:id").put(protect,updateUser);
-router.route("/log/:id").delete(protect,deleteUser);
+router.route("/").post(createUser);
+router.route("/login").post(login);
+router.route("/log/update").put(protect, updateUser);
+router.route("/log/delete").delete(protect, deleteUser);
+router.route("/log/all").get(protect, getUsers);
+router.route("/log/:id").get(protect, FollowUnfollow);
 
-module.exports=router;
+module.exports = router;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Feed from "./Feed";
+import Users from "./Users";
 
 function Home() {
   return (
@@ -9,7 +10,9 @@ function Home() {
       <div className="feed">
         <Feed />
       </div>
-      <div className="users">users</div>
+      <div className="users">
+        <Users />
+      </div>
     </Feeed>
   );
 }
@@ -26,8 +29,8 @@ const Feeed = styled.div`
     height: 100vh;
   }
   .users {
-    background-color: yellow;
-    width: 20vw;
+    /* background-color: yellow; */
+    width: 22vw;
     height: 100vh;
   }
 `;
