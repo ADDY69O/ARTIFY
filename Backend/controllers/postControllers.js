@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
 
@@ -18,16 +19,24 @@ const createPost = async (req, res) => {
     user.posts.push(post._id);
     await user.save();
 
-    res.status(201).json({ post, message: "Post created successfully" });
+    const populatedPost = await post
+      .populate("createdBy", "_id name email image")
+      .populate("likes", "_id name email image")
+      .populate("comments.user", "_id name email image");
+    res
+      .status(201)
+      .json({ post: populatedPost, message: "Post created successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
-// for creating post it requires to add the image it add it by using link
 
 const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ createdBy: req.user._id });
+    const posts = await Post.find({ createdBy: req.user._id })
+      .populate("createdBy", "_id name email image")
+      .populate("likes", "_id name email image")
+      .populate("comments.user", "_id name email image");
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
@@ -36,35 +45,40 @@ const getPosts = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    // console.log(req.user);
-    const posts = await Post.find({ createdBy: { $ne: req.user._id } });
+    const posts = await Post.find({
+      createdBy: { $ne: req.user._id },
+    })
+      .populate("createdBy", "_id name email image")
+      .populate("likes", "_id name email image")
+      .populate("comments.user", "_id name email image");
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
-
 const deletePost = async (req, res) => {
   try {
-    const post = await Post.find(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (post.createdBy.toString() != req.user._id.toString()) {
+    if (post.createdBy.toString() !== req.user._id.toString()) {
       return res.status(400).json({ message: "Unauthorized" });
     }
 
-    await post.remove();
-    const user = await User.find(req.user._id);
-    const index = user.posts.indexOf(req.params.id);
-    user.splice(index, 1);
+    await Post.deleteOne({ _id: req.params.id });
+
+    const user = await User.findById(req.user._id);
+    user.posts.pull(req.params.id);
     await user.save();
 
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -89,7 +103,7 @@ const updatePost = async (req, res) => {
 
 const LikeandDislike = async (req, res) => {
   try {
-    const post = await Post.find(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     if (!post) {
       return res.status(400).json({ message: "Post not found" });
@@ -97,13 +111,21 @@ const LikeandDislike = async (req, res) => {
 
     if (!post.likes.includes(req.user._id)) {
       post.likes.push(req.user._id);
-      post.save();
-      return res.status(200).json({ message: "liked Successfully" });
+      await post.save();
+
+      // Populate likes array with user details
+      await post.populate("likes", "_id name email image");
+
+      return res.status(200).json({ message: "Liked Successfully", post });
     } else {
       const index = post.likes.indexOf(req.user._id);
       post.likes.splice(index, 1);
       await post.save();
-      return res.status(200).json({ message: "Disliked Successfully" });
+
+      // Populate likes array with user details
+      await post.populate("likes", "_id name email image");
+
+      return res.status(200).json({ message: "Disliked Successfully", post });
     }
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -113,19 +135,30 @@ const LikeandDislike = async (req, res) => {
 const comment = async (req, res) => {
   try {
     const { message } = req.body;
-    if (!message) return res.status(400).json({ error: "comment not found" });
-    const post = await Post.find(req.params.id);
+    if (!message) return res.status(400).json({ error: "Comment not found" });
+
+    const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(400).json({ error: "Post Not Found" });
     }
 
-    post.comments.push({ user: req.user._id }, { comment: message });
-    post.save();
-    req.res.status(200).json({ message: "comment added successFully" });
+    post.comments.push({ user: req.user._id, comment: message });
+    await post.save();
+
+    // Populate the user details within the comments
+    const populatedPost = await Post.findById(post._id)
+      .populate("createdBy", "_id name email image")
+      .populate("likes", "_id name email image")
+      .populate("comments.user", "_id name email image");
+
+    res
+      .status(200)
+      .json({ message: "Comment added successfully", post: populatedPost });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
 };
+
 const DeleteComment = async (req, res) => {
   try {
     const { message } = req.body;

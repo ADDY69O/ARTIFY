@@ -35,13 +35,14 @@ const updateUser = async (req, res, next) => {
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
+
   if (req.body.password) {
     req.body.password = await bcrypt.hash(req.body.password, 12);
   }
 
-  user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  user = await User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
-    runValidators: true,
+
     useFindAndModify: false,
   });
   return res
@@ -112,27 +113,32 @@ const getUsers = async (req, res) => {
 
 const FollowUnfollow = async (req, res) => {
   try {
-    const userTofollow = await User.find(req.params.id);
-    if (!userTofollow) {
+    const userTofollow = await User.findById(req.params.id);
+    if (userTofollow.length === 0) {
       return res.status(400).json({ message: "user not found" });
     }
-    const loggedUser = await User.find(req.user._id);
+
+    const loggedUser = await User.findById(req.user._id);
+    if (loggedUser.length === 0) {
+      return res.status(400).json({ message: "login required" });
+    }
     if (
       !userTofollow.followers.includes(req.user._id) &&
       !loggedUser.following.includes(req.params.id)
     ) {
       loggedUser.following.push(req.params.id);
       userTofollow.followers.push(req.user._id);
-      return res.status(200).json({ message: "follow Successfully" });
-    } else {
-      const index1 = loggedUser.following.indexOf(req.params.id);
-      const index2 = userTofollow.followers.indexOf(req.user._id);
-      loggedUser.following.splice(index1, 1);
-      userTofollow.followers.splice(index2, 1);
       await loggedUser.save();
       await userTofollow.save();
-      return res.status(200).json({ message: "Unfollow Successfully" });
+      return res.status(200).json({ message: "follow Successfully" });
     }
+    const index1 = loggedUser.following.indexOf(req.params.id);
+    const index2 = userTofollow.followers.indexOf(req.user._id);
+    loggedUser.following.splice(index1, 1);
+    userTofollow.followers.splice(index2, 1);
+    await loggedUser.save();
+    await userTofollow.save();
+    return res.status(200).json({ message: "Unfollow Successfully" });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
