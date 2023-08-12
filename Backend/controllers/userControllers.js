@@ -144,6 +144,19 @@ const FollowUnfollow = async (req, res) => {
   }
 };
 
+const singleUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("posts");
+    if (!user) {
+      return req.res(400).json({ meesage: "user not found" });
+    }
+
+    return res.status(200).json({ message: "user found", user });
+  } catch (error) {
+    return res.status(400).json({ message: error.meesage });
+  }
+};
+
 module.exports = {
   createUser,
   login,
@@ -151,4 +164,5 @@ module.exports = {
   updateUser,
   getUsers,
   FollowUnfollow,
+  singleUser,
 };

@@ -8,6 +8,7 @@ const {
   updateUser,
   getUsers,
   FollowUnfollow,
+  singleUser,
 } = require("../controllers/userControllers");
 
 const protect = require("../middleware/protect");
@@ -24,5 +25,6 @@ router.route("/log/update").put(protect, updateUser);
 router.route("/log/delete").delete(protect, deleteUser);
 router.route("/log/all").get(protect, getUsers);
 router.route("/log/:id").get(protect, FollowUnfollow);
+router.route("/:id").get(protect, singleUser);
 
 module.exports = router;

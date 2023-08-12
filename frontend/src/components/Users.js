@@ -16,9 +16,7 @@ const Users = () => {
       };
 
       const response = await fetch(
-        `http://localhost:8000/api/v1/user/log/${localStorage.getItem(
-          "userInfo"
-        )}/all`,
+        `http://localhost:8000/api/v1/user/log/all`,
         option
       );
 
@@ -55,6 +53,7 @@ const Users = () => {
 };
 
 const Wrapper = styled.div`
+  background-color: #f0f2f5;
   margin-top: 78px;
   width: 100%;
   h2 {

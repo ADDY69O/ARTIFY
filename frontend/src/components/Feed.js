@@ -28,7 +28,7 @@ function Feed() {
   useEffect(() => {
     localStorage.setItem(
       "userInfo",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YzRiZDg0ZmQyOTcwNzQ5YWZiYjI3OSIsImlhdCI6MTY5MTU2MTU1NiwiZXhwIjoxNjk0MTUzNTU2fQ.MfossD64gxe102afXg9fGlNW93Wrc-JF4ASIXUBZP8g"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDcxYzI0NDk0MThjODRmNjdkYjAwMSIsImlhdCI6MTY5MTgxOTA3MCwiZXhwIjoxNjk0NDExMDcwfQ.mkKHbbMFiQjmMzGkOmemASj3bHKwNaQDEUC50sk8_E0"
     );
     getAllpost();
   }, []);
@@ -43,6 +43,7 @@ function Feed() {
 }
 
 const Wrapper = styled.div`
+  background-color: #f0f2f5;
   margin: 18px;
   display: flex;
   flex-direction: column;
