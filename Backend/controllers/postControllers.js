@@ -19,15 +19,19 @@ const createPost = async (req, res) => {
     user.posts.push(post._id);
     await user.save();
 
-    const populatedPost = await post
+    const populatedPost = await Post.findById(post._id)
       .populate("createdBy", "_id name email image")
       .populate("likes", "_id name email image")
       .populate("comments.user", "_id name email image");
+
     res
       .status(201)
       .json({ post: populatedPost, message: "Post created successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error creating post:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -137,23 +141,34 @@ const comment = async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: "Comment not found" });
 
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id)
+      .populate("createdBy", "_id name email image")
+      .populate("likes", "_id name email image")
+      .populate("comments.user", "_id name email image");
     if (!post) {
       return res.status(400).json({ error: "Post Not Found" });
     }
 
-    post.comments.push({ user: req.user._id, comment: message });
-    await post.save();
+    let isExist = -1;
+    post.comments.forEach((item, index) => {
+      if (item.user._id.toString() === req.user._id.toString()) {
+        isExist = index;
+      }
+    });
 
-    // Populate the user details within the comments
-    const populatedPost = await Post.findById(post._id)
-      .populate("createdBy", "_id name email image")
-      .populate("likes", "_id name email image")
-      .populate("comments.user", "_id name email image");
+    if (
+      isExist != -1 &&
+      post.comments[isExist].user._id.toString() === req.user._id.toString()
+    ) {
+      post.comments[isExist].comment = message;
+    } else {
+      post.comments.push({ user: req.user._id, comment: message }); // Use 'message' instead of 'comment'
+    }
+    await post.save(); // Moved this line outside of the forEach loop
 
-    res
+    return res
       .status(200)
-      .json({ message: "Comment added successfully", post: populatedPost });
+      .json({ message: "Comment added successfully", post });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

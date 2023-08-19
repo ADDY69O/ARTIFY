@@ -1,12 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
 function Navbar() {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       {/* <img src="logoGen.webp" alt="logo" />
        */}
-      <h3>🤣 MemeSocio</h3>
+      <h3 className="tt" onClick={() => navigate("/")}>
+        🤣 MemeSocio
+      </h3>
       <h3>My Account</h3>
     </Wrapper>
   );
@@ -22,6 +25,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  .tt {
+    cursor: pointer;
+  }
 `;
 
 export default Navbar;

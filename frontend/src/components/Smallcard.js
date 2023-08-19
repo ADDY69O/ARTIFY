@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
 const Smallcard = ({ user }) => {
+  const navigate = useNavigate();
+
   return (
     <UserFeed>
       <div className="inner">
@@ -9,12 +11,13 @@ const Smallcard = ({ user }) => {
         <p>{user.name}</p>
       </div>
 
-      <button>View</button>
+      <button onClick={() => navigate(`/about/${user._id}`)}>View</button>
       <hr />
     </UserFeed>
   );
 };
 const UserFeed = styled.div`
+  background-color: #f0f2f5;
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -31,10 +34,11 @@ const UserFeed = styled.div`
     text-align: end;
   }
 
-  .img {
-    width: 50px;
-    height: 40px;
+  img {
+    width: 60px;
+    height: 57px;
     border-radius: 50%;
+    min-zoom: 20%;
     overflow: hidden;
   }
 `;

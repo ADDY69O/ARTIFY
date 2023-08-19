@@ -1,33 +1,151 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { BiLike, BiCommentDetail } from "react-icons/bi";
+import { BiLike, BiCommentDetail, BiSolidLike } from "react-icons/bi";
+import { TbSquareRoundedArrowRight } from "react-icons/tb";
+import CommentModal from "./CommentModal";
 
 const Card = ({ post }) => {
   // console.log(post);
+
+  const [likeUser, setlikeUser] = useState([]);
+
+  const [checkLike, setCheckLike] = useState(false);
+  const [comment, setComment] = useState("");
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [comments, setComments] = useState([]);
+  const isliked = () => {
+    if (post.likes) {
+      post.likes.forEach((item, index) => {
+        if (item._id.toString() == "64d71c2449418c84f67db001") {
+          setCheckLike(true);
+        }
+      });
+    }
+  };
+  const handleLike = async (id) => {
+    try {
+      const reqId = localStorage.getItem("userInfo");
+      const option = {
+        method: "get",
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("userInfo")}`,
+        },
+      };
+
+      const response = await fetch(
+        `http://localhost:8000/api/v1/post/${id}`,
+        option
+      );
+
+      const res = await response.json();
+      console.log(res.post.likes);
+      setlikeUser(res.post);
+      setCheckLike(!checkLike);
+      // if (res.post.likes.some((likes) => likes._id == reqId)) {
+      //   setCheckLike(true);
+      // } else {
+      //   setCheckLike(false);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleSubmit = async () => {
+    try {
+      const option = {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json", // Specify the content type
+          authorization: `Bearer ${localStorage.getItem("userInfo")}`,
+        },
+        body: JSON.stringify({ message: comment }), // Serialize the body as JSON
+      };
+      const response = await fetch(
+        `http://localhost:8000/api/v1/post/${post._id}/comment`,
+        option
+      );
+      const res = await response.json();
+      console.log(res);
+      setComments(res.comments);
+      // setShowCommentModal(true);
+      setComment("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleComment = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setComment(e.target.value);
+  };
+  const handleCommentIconClick = async () => {
+    try {
+      // const option = {
+      //   method: "post",
+      //   headers: {
+      //     authorization: `Bearer ${localStorage.getItem("userInfo")}`,
+      //   },
+      // };
+      // const response = await fetch(
+      //   `http://localhost:8000/api/v1/post/${post._id}`,
+      //   option
+      // );
+      // const res = await response.json();
+      setComments(post.comments);
+      setShowCommentModal(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    isliked();
+  }, []);
+
   return (
     <Wrapper>
       <div className="upper">
-        <img
-          className="profileCard"
-          src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          alt=""
-        />
+        <img className="profileCard" src={post.createdBy.image} alt="" />
 
-        <p className="Name">Aryan</p>
+        <p className="Name">{post.createdBy.name}</p>
       </div>
 
       <img className="main" src={post.image} alt="" />
       <div className="icons">
-        <BiLike size={30} /> <BiCommentDetail size={30} />
+        {checkLike ? (
+          <BiSolidLike size={30} onClick={() => handleLike(post._id)} />
+        ) : (
+          <BiLike size={30} onClick={() => handleLike(post._id)} />
+        )}
+        <BiCommentDetail size={30} onClick={handleCommentIconClick} />
+        <p>{likeUser.likes ? likeUser.likes.length : "0"}</p>
       </div>
       <h3 className="title">{post.message}</h3>
       <p className="time">created at : {post.createdAt.slice(0, 10)}</p>
+      {showCommentModal && (
+        <CommentModal
+          comments={comments}
+          onClose={() => setShowCommentModal(false)}
+        />
+      )}
+      <div className="footer">
+        <input
+          type="text"
+          placeholder="Enter the comment"
+          value={comment}
+          name=""
+          id=""
+          onChange={(e) => handleComment(e)}
+        />
+        <TbSquareRoundedArrowRight size={30} onClick={() => handleSubmit()} />
+      </div>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  background-color: #ffffff;
+  background-color: #f0f2f5;
+
   border: 2px solid black;
   width: 660px;
   height: fit-content;
@@ -36,10 +154,22 @@ const Wrapper = styled.div`
   justify-content: center;
   margin-top: 20px;
   margin-bottom: 40px;
+  .footer {
+    input {
+      width: 100%;
+      font-size: 1.2rem;
+    }
+    display: flex;
+  }
   .main {
-    width: 650px;
+    margin-top: 9px;
+    width: 100%;
     height: fit-content;
     object-fit: cover;
+    border: 1px solid black;
+  }
+  .icons {
+    cursor: pointer;
   }
   .profileCard {
     /* margin: 10px; */

@@ -22,6 +22,7 @@ const Feeed = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  height: 100%;
 
   .feed {
     /* background-color: green; */
