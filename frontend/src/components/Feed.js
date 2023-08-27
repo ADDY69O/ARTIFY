@@ -32,6 +32,7 @@ import { loadUser } from "../Redux/Actions/User";
     //   ]}
     // };
 
+<<<<<<< HEAD
     const [image, setImage] = useState(null);
     const [message, setMessage] = useState("");
 
@@ -107,15 +108,37 @@ import { loadUser } from "../Redux/Actions/User";
         </div>
         {posts && posts.map((post, index) => <Card post={post} key={post._id} />)}
       </Wrapper>
+=======
+      const res = await response.json();
+      setposts(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    localStorage.setItem(
+      "userInfo",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDcxYzI0NDk0MThjODRmNjdkYjAwMSIsImlhdCI6MTY5MTgxOTA3MCwiZXhwIjoxNjk0NDExMDcwfQ.mkKHbbMFiQjmMzGkOmemASj3bHKwNaQDEUC50sk8_E0"
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
     );
   };
 
+<<<<<<< HEAD
   const Wrapper = styled.div`
     background-color: #f0f2f5;
     margin: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
+=======
+const Wrapper = styled.div`
+  background-color: #f0f2f5;
+  margin: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
 
     input[type="file"] {
       margin-bottom: 12px;

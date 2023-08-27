@@ -23,10 +23,17 @@ const Users = () => {
   //       },
   //     };
 
+<<<<<<< HEAD
   //     const response = await fetch(
   //       `http://localhost:8000/api/v1/user/log/all`,
   //       option
   //     );
+=======
+      const response = await fetch(
+        `http://localhost:8000/api/v1/user/log/all`,
+        option
+      );
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
 
   //     const res = await response.json();
   //     console.log(res.Alluser);

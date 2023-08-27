@@ -8,11 +8,20 @@
 
   import Users from "./Users";
 
+<<<<<<< HEAD
   const Home = () => {
     // const { user } = ChatState();
     // console.log(user);
     const dispatch = useDispatch();
    
+=======
+const Feeed = styled.div`
+  background-color: #f0f2f5;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100%;
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
 
     useEffect(() => {
       // console.log(localStorage.getItem("userInfo"));

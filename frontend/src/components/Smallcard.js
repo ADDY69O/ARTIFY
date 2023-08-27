@@ -1,11 +1,17 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 // import { ChatState } from "../Context/ChatProvider";
 
 const Smallcard = ({ user }) => {
   const navigate = useNavigate();
   // const { selectedUser } = ChatState();
+=======
+const Smallcard = ({ user }) => {
+  const navigate = useNavigate();
+
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
   return (
     <UserFeed>
       <div className="inner">

@@ -9,7 +9,10 @@ const {
   getUsers,
   FollowUnfollow,
   singleUser,
+<<<<<<< HEAD
   loadUser,
+=======
+>>>>>>> ef0438f4d61a9a05955611cb40f0edadf3c6e99a
 } = require("../controllers/userControllers");
 
 const protect = require("../middleware/protect");
