@@ -50,6 +50,15 @@ const updateUser = async (req, res, next) => {
     .json({ success: "true", message: "updated the user", user });
 };
 
+const loadUser = async (req, res) => {
+  try {
+    // console.log(req.user);
+    return res.status(200).json({ success: "true", user: req.user });
+  } catch (error) {
+    return res.status(500).json("Login required");
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -92,10 +101,13 @@ const deleteUser = async (req, res, next) => {
 
 const getUsers = async (req, res) => {
   try {
-    // console.log(req.user);
+    console.log(req.user);
     const AllUsers = await User.find({
       _id: { $ne: new mongoose.Types.ObjectId(req.user._id) },
-    });
+    })
+      .populate("following", "_id name email image")
+      .populate("followers", "_id name email image")
+      .populate("posts");
 
     if (!AllUsers) {
       req.status(400).json({ message: "Users not found" });
@@ -165,4 +177,5 @@ module.exports = {
   getUsers,
   FollowUnfollow,
   singleUser,
+  loadUser,
 };

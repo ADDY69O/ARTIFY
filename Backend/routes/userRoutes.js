@@ -9,6 +9,7 @@ const {
   getUsers,
   FollowUnfollow,
   singleUser,
+  loadUser,
 } = require("../controllers/userControllers");
 
 const protect = require("../middleware/protect");
@@ -21,6 +22,7 @@ const router = express.Router();
 
 router.route("/").post(createUser);
 router.route("/login").post(login);
+router.route("/load").get(protect, loadUser);
 router.route("/log/update").put(protect, updateUser);
 router.route("/log/delete").delete(protect, deleteUser);
 router.route("/log/all").get(protect, getUsers);

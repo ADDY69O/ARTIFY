@@ -138,6 +138,7 @@ const LikeandDislike = async (req, res) => {
 
 const comment = async (req, res) => {
   try {
+    console.log(req.body);
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: "Comment not found" });
 
